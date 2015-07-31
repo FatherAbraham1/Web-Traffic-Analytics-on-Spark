@@ -9,10 +9,10 @@ import java.util.Date
 import java.util.UUID
 import java.sql.Timestamp
 
-case class Visit(val visitID:String, val visitor:String, val firstHit:Timestamp, var lastHit:Timestamp, var numOfAct:Int, var duraction:Long) extends Serializable {
-    
+case class Visit(val visitID:String, val visitor:String, val firstHit:Timestamp, var lastHit:Timestamp, var numOfAct:Int, var duraction:Long, var alive:Boolean) extends Serializable {
+  
   def this(visitID:String, visitor:String, firstHit:Timestamp, lastHit:Timestamp) = 
-    this(visitID, visitor, firstHit, lastHit, 1, 0)
+    this(visitID, visitor, firstHit, lastHit, 1, 0, true)
   
   def setLastHit(value:Timestamp) = {
     lastHit = value
@@ -20,7 +20,9 @@ case class Visit(val visitID:String, val visitor:String, val firstHit:Timestamp,
   }
   
   def addOne = numOfAct += 1
- 
-  override def toString = "[" + visitID +", " + visitor + ", " + firstHit + ", " + lastHit +"]"
+  
+  def kill = {alive = false}
+  
+  override def toString = visitID +", " + visitor + ", " + firstHit + ", " + lastHit + ", " + numOfAct + ", " + duraction + ", " + alive
   
 }

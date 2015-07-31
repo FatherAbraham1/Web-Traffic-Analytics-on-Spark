@@ -59,7 +59,7 @@ object ReportGenerator {
     return res
   }
   
-  def getNumOfUniVisits(ts1:Timestamp, ts2:Timestamp):Long = {
+  def getNumOfUniVisitors(ts1:Timestamp, ts2:Timestamp):Long = {
     if(!registed) throw new Exception("Please regist first")
     if(!dataType.equals("visit")) throw new Exception("Data tpye doesn't match")
     val res = df.where(df("firstHit") >= ts1 && df("firstHit") < ts2).groupBy("visitor").count().count()
@@ -79,19 +79,19 @@ object ReportGenerator {
     if(!registed) throw new Exception("Please regist first")
     if(!dataType.equals("visit")) throw new Exception("Data tpye doesn't match")
     df.where(df("firstHit") >= ts1 && df("firstHit") < ts2).registerTempTable("avg_visit_duraction")
-    val avgDuraction = sqlContext.sql("SELECT SUM(duraction) FROM act_per_visit")
+    val avgDuraction = sqlContext.sql("SELECT SUM(duraction) FROM avg_visit_duraction")
     val res:Double = avgDuraction.map ( x => x(0) ).take(1).apply(0).toString().toLong/1000
     return res
   }
   
-  def getNumAct(ts1:Timestamp, ts2:Timestamp):Double = {
-    if(!registed) throw new Exception("Please regist first")
-    if(!dataType.equals("visit")) throw new Exception("Data tpye doesn't match")
-    df.where(df("firstHit") >= ts1 && df("firstHit") < ts2).registerTempTable("act_per_visit")
-    val maxAct = sqlContext.sql("SELECT SUM(numOfAct) FROM act_per_visit")
-    val res:Double = 100*maxAct.map ( x => x(0) ).take(1).apply(0).toString().toLong
-    return res
-  }
+//  def getNumAct(ts1:Timestamp, ts2:Timestamp):Double = {
+//    if(!registed) throw new Exception("Please regist first")
+//    if(!dataType.equals("visit")) throw new Exception("Data tpye doesn't match")
+//    df.where(df("firstHit") >= ts1 && df("firstHit") < ts2).registerTempTable("act_per_visit")
+//    val numAct = sqlContext.sql("SELECT SUM(numOfAct) FROM act_per_visit")
+//    val res:Double = 100*numAct.map ( x => x(0) ).take(1).apply(0).toString().toLong
+//    return res
+//  }
   
   def getBounceCount(ts1:Timestamp, ts2:Timestamp):Double = {
     if(!registed) throw new Exception("Please regist first")

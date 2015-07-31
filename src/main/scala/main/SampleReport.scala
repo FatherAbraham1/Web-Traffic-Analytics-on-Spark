@@ -37,7 +37,7 @@ object SampleReport extends App {
   var ts2:Timestamp = null  
   try {  
       ts1 = Timestamp.valueOf("2014-04-30 01:00:00");  
-      ts2 = Timestamp.valueOf("2014-05-01 01:00:00");  
+      ts2 = Timestamp.valueOf("2014-05-02 01:00:00");  
   } catch {  
       case e: Exception => println(e)
   }  
@@ -50,27 +50,27 @@ object SampleReport extends App {
     "visit"
   )  
   val nbVisits:Double = ReportGenerator.getNumOfVisits(ts1, ts2)
-  val nbUniqvisitors:Double = ReportGenerator.getNumOfUniVisits(ts1, ts2)
+  val nbUniqvisitors:Double = ReportGenerator.getNumOfUniVisitors(ts1, ts2)
   val maxActions:Double = ReportGenerator.getNumOfMaxAct(ts1, ts2)
-  val nbActions:Double = ReportGenerator.getNumAct(ts1, ts2)// The same as actionsNbPageviews
+  val nbActions:Double = actionsNbPageviews// The same as actionsNbPageviews
   val bounceCount:Double = ReportGenerator.getBounceCount(ts1, ts2)
   val sumVisitLength:Double = ReportGenerator.getDuraction(ts1, ts2)
   
   /*
    * Store the report to MySQL
    */
-  
+  val reportId = 12
   //case class Archive(idarchive: Int, name: String, idsite: Int, date1: Date, date2: Date, period: Int, ts_archived: Timestamp, value: Double)
   val data = sc.parallelize(List(
     /*The second parameter is set to match the table in Piwik*/
-    (5, "Actions_nb_pageviews", idsite, new java.sql.Date(ts1.getTime), new java.sql.Date(ts2.getTime) ,1, new Timestamp(System.currentTimeMillis()), actionsNbPageviews),
-    (5, "Actions_nb_uniq_pageviews", idsite, new java.sql.Date(ts1.getTime), new java.sql.Date(ts2.getTime) ,1, new Timestamp(System.currentTimeMillis()), actionsNbUniqpageviews),
-    (5, "nb_visits", idsite, new java.sql.Date(ts1.getTime), new java.sql.Date(ts2.getTime) ,1, new Timestamp(System.currentTimeMillis()), nbVisits),
-    (5, "nb_uniq_visitors", idsite, new java.sql.Date(ts1.getTime), new java.sql.Date(ts2.getTime) ,1, new Timestamp(System.currentTimeMillis()), nbUniqvisitors),
-    (5, "max_actions", idsite, new java.sql.Date(ts1.getTime), new java.sql.Date(ts2.getTime) ,1, new Timestamp(System.currentTimeMillis()), maxActions),
-    (5, "nb_actions", idsite, new java.sql.Date(ts1.getTime), new java.sql.Date(ts2.getTime) ,1, new Timestamp(System.currentTimeMillis()), nbActions),
-    (5, "bounce_count", idsite, new java.sql.Date(ts1.getTime), new java.sql.Date(ts2.getTime) ,1, new Timestamp(System.currentTimeMillis()), bounceCount),
-    (5, "sum_visit_length", idsite, new java.sql.Date(ts1.getTime), new java.sql.Date(ts2.getTime) ,1, new Timestamp(System.currentTimeMillis()), sumVisitLength)
+    (reportId, "Actions_nb_pageviews", idsite, new java.sql.Date(ts1.getTime), new java.sql.Date(ts2.getTime) ,1, new Timestamp(System.currentTimeMillis()), actionsNbPageviews),
+    (reportId, "Actions_nb_uniq_pageviews", idsite, new java.sql.Date(ts1.getTime), new java.sql.Date(ts2.getTime) ,1, new Timestamp(System.currentTimeMillis()), actionsNbUniqpageviews),
+    (reportId, "nb_visits", idsite, new java.sql.Date(ts1.getTime), new java.sql.Date(ts2.getTime) ,1, new Timestamp(System.currentTimeMillis()), nbVisits),
+    (reportId, "nb_uniq_visitors", idsite, new java.sql.Date(ts1.getTime), new java.sql.Date(ts2.getTime) ,1, new Timestamp(System.currentTimeMillis()), nbUniqvisitors),
+    (reportId, "max_actions", idsite, new java.sql.Date(ts1.getTime), new java.sql.Date(ts2.getTime) ,1, new Timestamp(System.currentTimeMillis()), maxActions),
+    (reportId, "nb_actions", idsite, new java.sql.Date(ts1.getTime), new java.sql.Date(ts2.getTime) ,1, new Timestamp(System.currentTimeMillis()), nbActions),
+    (reportId, "bounce_count", idsite, new java.sql.Date(ts1.getTime), new java.sql.Date(ts2.getTime) ,1, new Timestamp(System.currentTimeMillis()), bounceCount),
+    (reportId, "sum_visit_length", idsite, new java.sql.Date(ts1.getTime), new java.sql.Date(ts2.getTime) ,1, new Timestamp(System.currentTimeMillis()), sumVisitLength)
   ))
   
   val conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/log_data", "root", "root")

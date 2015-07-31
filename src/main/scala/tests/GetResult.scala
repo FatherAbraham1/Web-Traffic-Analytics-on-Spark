@@ -6,7 +6,8 @@ package tests
 
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
-import org.apache.spark.SparkConf
+import org.apache.spark.SparkConf 
+import java.sql.Timestamp
 
 object GetResult extends App {
   
@@ -41,5 +42,19 @@ object GetResult extends App {
   val test = sqlContext.sql("SELECT * FROM visits WHERE numOfAct = 836").show()
 
   println(test)
+  
+  val df = sqlContext.parquetFile("hdfs://localhost:8020/"+"/user/lewis/web_traffic/idsite_"+2+"/visits.parquet")
+  var ts1:Timestamp = null
+  var ts2:Timestamp = null  
+  try {  
+      ts1 = Timestamp.valueOf("2014-04-30 01:00:00");  
+      ts2 = Timestamp.valueOf("2014-05-01 01:00:00");  
+  } catch {  
+      case e: Exception => println(e)
+  }  
+  val n = df.where(df("firstHit") < ts2 && df("lastHit") >= ts2).count()
+  println(n)//119
+  
+  
   
 }
